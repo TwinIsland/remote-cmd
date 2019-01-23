@@ -1,0 +1,5 @@
+{
+  "mailAccount" : "你的163邮箱@163.com",
+  "mailPassword" : "你的密码",
+  "RefreshWait" : "刷新频率（程序检查邮箱的频率，最好写5）"
+}
