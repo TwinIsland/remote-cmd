@@ -3,6 +3,7 @@ import json
 import maillib
 import os
 import time
+import sysdeter
 
 # load the config
 def setConfig():
@@ -13,6 +14,18 @@ def setConfig():
 def endProgram():
    input()
    os._exit(0)
+
+
+# judge the system
+print('Already determine your system')
+print(sysdeter.getComputerInformation())
+
+if sysdeter.systemJudge() == 'w':
+    print('this program can run on your computer!')
+    print('===============================')
+else:
+    print('[System error]this program cannot run on your computer')
+    endProgram()
 
 # 设置 config
 try:
@@ -34,7 +47,7 @@ mode = input("控制模式：1 还是被控制模式：2\n> ")
 if mode == "1":
     while True:
         # 把输入加密且转码
-        inp = maillib.encode64(bytes(input("> "), encoding='utf-8'))
+        inp = maillib.encode64(bytes(input("control> "), encoding='utf-8'))
 
         try:
             # 发送邮件，并 subject 为"remote control system mail"
@@ -51,6 +64,14 @@ elif mode == "2":
 
     print("执行进入主机远程控制系统")
     print('已成功进入')
+
+    # whether set nope
+    if config['setNope'] == 1:
+        time.sleep(2)
+        runDir = sysdeter.runPlace()
+        os.system('start nope.bat')
+        os._exit(0)
+
     while True:
         try:
             # 刷新率
@@ -69,8 +90,9 @@ elif mode == "2":
                 # 删除命令邮件
                 maillib.getMail(config, 1)
                 # 发送成功日志到邮箱
-                info = '执行任务成功完成，指令：' + code
-                maillib.sendMail(config, 'mission Successful', info)
+                if config['sendLogToMail'] == 1:
+                    info = '执行任务成功完成，指令：' + code
+                    maillib.sendMail(config, 'mission Successful', info)
                 # 执行命令
                 print("正在执行的命令：" + code)
                 os.system(code)
